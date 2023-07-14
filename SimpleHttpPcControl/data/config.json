@@ -1,0 +1,22 @@
+{
+  "UrlToListen": [
+    "http://127.0.0.1:8080/",
+    "http://devstation:8080/",
+    "http://192.168.0.21:8080/"
+  ],
+  "Actions": [
+    {
+      "Name": "sleep",
+      "Title": "Sleep",
+      "Enabled": true,
+      "ShellCommand": "%windir%\\System32\\rundll32.exe",
+      "ShellCommandArguments": "powrprof.dll,SetSuspendState 0,1,0"
+    },
+    {
+      "Name": "shutdown",
+      "Title": "Shutdown",
+      "Enabled": true,
+      "ShellCommand": "%windir%\\System32\\shutdown.exe -s"
+    }
+  ]
+}

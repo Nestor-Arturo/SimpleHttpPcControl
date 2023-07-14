@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Server Admin</title>
+    <style>
+        html {
+            box-sizing: border-box;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            width: 100vw;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 0.3em;
+            border: none;
+            margin: 0;
+            padding: 0 1em;
+        }
+
+            .main-container > .button {
+                flex-grow: 1;
+                padding: 1em;
+                border-radius: 0.5em;
+                height: fit-content;
+                font-weight: bold;
+                font-size: 1.5em;
+                border: 0.1em solid white;
+                display: flex;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+        .server-name {
+            color: yellow;
+            width: 100%;
+            padding: 1em;
+            height: min-content;
+            font-weight: bold;
+            font-size: 2em;
+            display: flex;
+            justify-content: center;
+        }
+
+        .shutdown {
+            background-color: rgb(20, 113, 109);
+            color: white;
+        }
+
+        .sleep {
+            background-color: rgb(113, 20, 20);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="server-name">Game Station</div>

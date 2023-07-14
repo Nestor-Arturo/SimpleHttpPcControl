@@ -1,0 +1,19 @@
+    </div>
+    <script>
+        var buttons = document.querySelectorAll('.button');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('click', function (event) {
+                var source = event.target || event.srcElement;
+                buttonClick(source.getAttribute('data-action'));
+            })
+        }
+
+        function buttonClick(action) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/", true);
+            xhr.setRequestHeader("action", action);
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
