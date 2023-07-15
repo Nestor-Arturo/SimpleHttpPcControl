@@ -23,6 +23,11 @@ To tell Windows to receive communications for this app execute this command as a
 netsh http add urlacl url=http://MyPcAddress:MyFreePort/ user=everyone listen=yes
 ```
 
+Also, we need to tell the firewall to allow communication through the port we selected (8080 in this example):
+```
+netsh firewall add portopening TCP 8080 SimpleHttpPcControl enable ALL
+```
+
 The previous command:
 - Permanently register the address in the url parameter as an acceptable incomming point of request.
 - **MyPcAddress**: This is your PC IP address or name. Prefer the IP address. This IP was found with the command IPCONFIG.
