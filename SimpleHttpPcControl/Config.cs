@@ -7,14 +7,14 @@ namespace SimpleHttpPcControl
         /// <summary>
         /// List of URLs to listen to.
         /// </summary>
-        public string[] UrlToListen { get; set; }
+        public string[]? UrlToListen { get; set; }
         /// <summary>
         /// All possible actions.
         /// </summary>
-        public Action[] Actions { get; set; }
+        public CommandAction[]? Actions { get; set; }
     }
 
-    internal class Action
+    internal class CommandAction
     {
         /// <summary>
         /// Name for this action.

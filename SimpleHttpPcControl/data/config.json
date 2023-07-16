@@ -16,7 +16,8 @@
       "Name": "shutdown",
       "Title": "Shutdown",
       "Enabled": true,
-      "ShellCommand": "%windir%\\System32\\shutdown.exe -s"
+      "ShellCommand": "%windir%\\System32\\shutdown.exe",
+      "ShellCommandArguments": "/s /f"
     }
   ]
 }

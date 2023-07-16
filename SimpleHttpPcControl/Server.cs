@@ -6,6 +6,8 @@ namespace SimpleHttpPcControl
 {
     internal partial class Server
     {
+        const string StartupMessage = "SimpleHttpPcControl is Listening...";
+
         /// <summary>
         /// Configure and start listening in the provided URL's.
         /// </summary>
@@ -23,23 +25,29 @@ namespace SimpleHttpPcControl
             if (Common.Config?.UrlToListen?.Any() != true)
                 throw new ArgumentException("prefixes");
 
-            HttpListener listener = new HttpListener();
-            foreach (string s in Common.Config.UrlToListen)
-                listener.Prefixes.Add(s);
+            HttpListener Listener = new HttpListener();
 
-            listener.Start();
-            Console.WriteLine("SimpleHttpPcControl is Listening...");
+            Common.RetryCommand(() =>
+            {
+                foreach (string s in Common.Config.UrlToListen)
+                    Listener.Prefixes.Add(s);
+                Listener.Start();
+            }, () => Listener = new HttpListener());
+
+            Console.WriteLine(StartupMessage);
+            Common.Log(StartupMessage);
+
             try
             {
                 while (true)
                 {
-                    HttpListenerContext context = listener.GetContext();
+                    HttpListenerContext context = Listener.GetContext();
                     BuildResponse(context);
                 }
             }
             catch (Exception)
             {
-                listener.Stop();
+                Listener.Stop();
                 throw;
             }
 
@@ -52,7 +60,7 @@ namespace SimpleHttpPcControl
         void BuildResponse(HttpListenerContext context)
         {
             var RequestAction = GetRequestAction(context.Request);
-            var Shell = Common.Config.Actions.FirstOrDefault(x => x.Name == RequestAction);
+            var Shell = Common.Config.Actions!.FirstOrDefault(x => x.Name == RequestAction);
 
             switch (RequestAction)
             {
@@ -68,7 +76,7 @@ namespace SimpleHttpPcControl
                 case Common.WebServerActions.Shutdown:
                     if (!string.IsNullOrWhiteSpace(Shell?.ShellCommand))
                         Process.Start(
-                            Environment.ExpandEnvironmentVariables(Shell.ShellCommand), 
+                            Environment.ExpandEnvironmentVariables(Shell.ShellCommand),
                             Shell.ShellCommandArguments ?? string.Empty);
                     break;
 
@@ -85,7 +93,7 @@ namespace SimpleHttpPcControl
         /// <param name="context"></param>
         void BuildFaviconResponse(HttpListenerContext context)
         {
-            byte[] buffer = File.ReadAllBytes(Common.GetCurrentExecutionFolder("data","favicon.ico"));
+            byte[] buffer = File.ReadAllBytes(Common.GetCurrentExecutionFolder("data", "favicon.ico"));
             context.Response.ContentLength64 = buffer.Length;
             context.Response.ContentType = "image/x-icon";
             Stream output = context.Response.OutputStream;

@@ -4,8 +4,16 @@
     {
         static void Main(string[] args)
         {
-            var ServerObject = new Server();
-            ServerObject.Listen();
+            try
+            {
+                var ServerObject = new Server();
+                ServerObject.Listen();
+            }
+            catch (Exception ex)
+            {
+                Common.Log(ex);
+                throw;
+            }
         }
     }
 }
