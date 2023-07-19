@@ -8,6 +8,15 @@ namespace SimpleHttpPcControl
     {
         const string StartupMessage = "SimpleHttpPcControl is Listening...";
 
+        readonly string[] RecognizedFavIcons = new string[] {
+                "android-chrome-192x192.png",
+                "android-chrome-512x512.png",
+                "apple-touch-icon.png",
+                "favicon-16x16.png",
+                "favicon-32x32.png",
+                "favicon.ico"
+            };
+
         /// <summary>
         /// Configure and start listening in the provided URL's.
         /// </summary>
@@ -60,29 +69,25 @@ namespace SimpleHttpPcControl
         void BuildResponse(HttpListenerContext context)
         {
             var RequestAction = GetRequestAction(context.Request);
-            var Shell = Common.Config.Actions!.FirstOrDefault(x => x.Name == RequestAction);
+            var Shell = Common.Config.Actions!.FirstOrDefault(x =>
+                x.Name.Equals(RequestAction, StringComparison.InvariantCultureIgnoreCase));
 
             switch (RequestAction)
             {
-                case Common.WebServerActions.DoNothing:
-                    BuildEmptyResponse(context);
+                case "":
+                    BuildGetIndexPageResponse(context);
                     break;
 
-                case Common.WebServerActions.GetFavicon:
+                case "getfavicon":
                     BuildFaviconResponse(context);
                     break;
 
-                case Common.WebServerActions.Sleep:
-                case Common.WebServerActions.Shutdown:
-                    if (!string.IsNullOrWhiteSpace(Shell?.ShellCommand))
+                default:
+                    if (!string.IsNullOrWhiteSpace(RequestAction)
+                        && !string.IsNullOrWhiteSpace(Shell?.ShellCommand))
                         Process.Start(
                             Environment.ExpandEnvironmentVariables(Shell.ShellCommand),
                             Shell.ShellCommandArguments ?? string.Empty);
-                    break;
-
-                case Common.WebServerActions.GetIndexPage:
-                default:
-                    BuildGetIndexPageResponse(context);
                     break;
             }
         }
@@ -93,7 +98,12 @@ namespace SimpleHttpPcControl
         /// <param name="context"></param>
         void BuildFaviconResponse(HttpListenerContext context)
         {
-            byte[] buffer = File.ReadAllBytes(Common.GetCurrentExecutionFolder("data", "favicon.ico"));
+            var favIconName = RecognizedFavIcons.FirstOrDefault(i =>
+                context.Request.Url?.AbsolutePath?.Equals($"/{i}",
+                    StringComparison.InvariantCultureIgnoreCase) == true)
+                ?? "favicon.ico";
+
+            byte[] buffer = File.ReadAllBytes(Common.GetCurrentExecutionFolder("data", favIconName));
             context.Response.ContentLength64 = buffer.Length;
             context.Response.ContentType = "image/x-icon";
             Stream output = context.Response.OutputStream;
@@ -131,22 +141,24 @@ namespace SimpleHttpPcControl
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Common.WebServerActions GetRequestAction(HttpListenerRequest request)
+        string GetRequestAction(HttpListenerRequest request)
         {
-            var Result = Common.WebServerActions.GetIndexPage;
-            var Action = request.Headers["action"]?.ToLower();
+            var Result = string.Empty;
+            var Action = (request.Headers["action"] ?? string.Empty).ToLower();
             var ValidAction = request.HttpMethod == "POST"
                 && request.Url?.AbsolutePath == "/";
+            var Actions = Common.Config.Actions;
 
-            if (ValidAction && Action == "sleep")
-                Result = Common.WebServerActions.Sleep;
-            else if (ValidAction && Action == "shutdown")
-                Result = Common.WebServerActions.Shutdown;
+
+            if (ValidAction
+                && Actions.Any(a =>
+                    (a.Name ?? string.Empty).Equals(Action, StringComparison.InvariantCultureIgnoreCase)) == true)
+                Result = Action;
+
             else if (request.HttpMethod == "GET"
-                && request.Url?.AbsolutePath?.Equals("/favicon.ico", StringComparison.InvariantCultureIgnoreCase) == true)
-                Result = Common.WebServerActions.GetFavicon;
-            else if (request.Url?.AbsolutePath != "/")
-                Result = Common.WebServerActions.DoNothing;
+                && RecognizedFavIcons.Any(i => request.Url?.AbsolutePath?.Equals($"/{i}", StringComparison.InvariantCultureIgnoreCase) == true))
+                Result = "getfavicon";
+
             return Result;
         }
 

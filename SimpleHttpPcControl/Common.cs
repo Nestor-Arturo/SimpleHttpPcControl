@@ -5,18 +5,6 @@ namespace SimpleHttpPcControl
 {
     internal class Common
     {
-        /// <summary>
-        /// Enumeration for all possible responses.
-        /// </summary>
-        internal enum WebServerActions
-        {
-            DoNothing,
-            GetIndexPage,
-            GetFavicon,
-            Sleep,
-            Shutdown
-        }
-
         static Config? _Config = null;
         /// <summary>
         /// The application configuration.

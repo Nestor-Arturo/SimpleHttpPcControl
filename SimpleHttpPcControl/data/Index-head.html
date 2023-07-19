@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Server Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <title>{{server-name}}</title>
     <style>
         html {
             box-sizing: border-box;
@@ -38,13 +41,13 @@
         }
 
             .main-container > .button {
-                flex-grow: 1;
+                flex: 0 1 0;
                 padding: 1em;
                 border-radius: 0.5em;
                 height: fit-content;
                 font-weight: bold;
                 font-size: 1.5em;
-                border: 0.1em solid white;
+                border: 0.1em solid gray;
                 display: flex;
                 justify-content: center;
                 cursor: pointer;
@@ -61,17 +64,38 @@
             justify-content: center;
         }
 
-        .shutdown {
-            background-color: rgb(20, 113, 109);
+        .sleep {
+            background-color: hsl(0, 100%, 20%);
             color: white;
         }
 
-        .sleep {
-            background-color: rgb(113, 20, 20);
+        .shutdown {
+            background-color: hsl(30, 100%, 20%);
             color: white;
+        }
+
+        .restart {
+            background-color: hsl(60, 100%, 20%);
+            color: white;
+        }
+
+        .overlay {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: hsl(0deg 0% 0% / 64%);
+            color: white;
+            font-size: 2em;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <div class="server-name">Game Station</div>
+        <div class="server-name">{{server-name}}</div>

@@ -1,9 +1,13 @@
     </div>
+    <div class="overlay">
+        <span>Command Send</span>
+    </div>
     <script>
         var buttons = document.querySelectorAll('.button');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].addEventListener('click', function (event) {
                 var source = event.target || event.srcElement;
+                toggleOverlay();
                 buttonClick(source.getAttribute('data-action'));
             })
         }
@@ -13,6 +17,10 @@
             xhr.open("POST", "/", true);
             xhr.setRequestHeader("action", action);
             xhr.send();
+        }
+
+        function toggleOverlay() {
+            document.querySelectorAll('.overlay')[0].style["display"] = "flex";
         }
     </script>
 </body>

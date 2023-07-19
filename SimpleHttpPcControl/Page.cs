@@ -16,10 +16,32 @@ namespace SimpleHttpPcControl
         static internal string GetIndexPageHtml()
         {
             var Result = new StringBuilder();
-            Result.Append(File.ReadAllText(Common.GetCurrentExecutionFolder("data", "Index-head.html")));
+            Result.Append(
+                TransformHtmlContentPart(
+                    File.ReadAllText(Common.GetCurrentExecutionFolder("data", "Index-head.html"))));
             Result.Append(GetIndexPageActions());
-            Result.Append(File.ReadAllText(Common.GetCurrentExecutionFolder("data", "Index-foot.html")));
+            Result.Append(
+                TransformHtmlContentPart(
+                    File.ReadAllText(Common.GetCurrentExecutionFolder("data", "Index-foot.html"))));
             return Result.ToString();
+        }
+
+        /// <summary>
+        /// Replaces other information in the html content.
+        /// </summary>
+        /// <param name="htmlTemplate"></param>
+        /// <returns></returns>
+        static StringBuilder TransformHtmlContentPart(string htmlTemplate)
+        {
+            var Result = new StringBuilder(htmlTemplate);
+            var ExpTemplateReplacements = new Regex(@"{{server-name}}", RegexOptions.Singleline);
+            var AllReplacementsMatches = ExpTemplateReplacements.Matches(htmlTemplate).Reverse();
+            foreach (var Replace in AllReplacementsMatches)
+            {
+                Result.Remove(Replace.Index, Replace.Length);
+                Result.Insert(Replace.Index, Common.Config.Server.Name);
+            }
+            return Result;
         }
 
         /// <summary>

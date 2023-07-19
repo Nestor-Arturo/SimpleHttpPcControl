@@ -5,13 +5,22 @@ namespace SimpleHttpPcControl
     internal class Config
     {
         /// <summary>
+        /// Information about this server.
+        /// </summary>
+        public ServerInfo Server { get; set; } = new();
+        /// <summary>
         /// List of URLs to listen to.
         /// </summary>
-        public string[]? UrlToListen { get; set; }
+        public string[] UrlToListen { get; set; } = Array.Empty<string>();
         /// <summary>
         /// All possible actions.
         /// </summary>
-        public CommandAction[]? Actions { get; set; }
+        public CommandAction[] Actions { get; set; } = Array.Empty<CommandAction>();
+    }
+
+    internal class ServerInfo
+    {
+        public string Name { get; set; } = string.Empty;
     }
 
     internal class CommandAction
@@ -19,12 +28,11 @@ namespace SimpleHttpPcControl
         /// <summary>
         /// Name for this action.
         /// </summary>
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public Common.WebServerActions Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         /// <summary>
         /// Title for this action.
         /// </summary>
-        public string? Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         /// <summary>
         /// false (default): This action is not available.
         /// </summary>
@@ -32,7 +40,7 @@ namespace SimpleHttpPcControl
         /// <summary>
         /// Shell Command to execute.
         /// </summary>
-        public string? ShellCommand { get; set; }
+        public string ShellCommand { get; set; } = string.Empty;
         /// <summary>
         /// Shell Command Parameters to use.
         /// </summary>
